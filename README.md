@@ -23,7 +23,7 @@ instead of the Macaron structure proposed in Conformer.
 
 <img width="417" alt="스크린샷 2022-06-11 오전 1 19 40" src="https://user-images.githubusercontent.com/54731898/173109027-76a51857-b3cf-4616-938d-d3b990a4cf13.png">  
 
-This repository contains only model code, but you can train with squeezeformer at [openspeech](https://github.com/openspeech-team/openspeech).  
+This repository contains only model code, but you can train with squeezeformer at [openspeech](https://github.com/openspeech-team/openspeech/blob/main/openspeech/models/squeezeformer/model.py).  
      
      
   
