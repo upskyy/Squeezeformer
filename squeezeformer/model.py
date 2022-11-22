@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Tuple
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from typing import Tuple
+
 from squeezeformer.encoder import SqueezeformerEncoder
 
 
@@ -49,23 +51,24 @@ class Squeezeformer(nn.Module):
         - **outputs** (batch, out_channels, time): Tensor produces by squeezeformer.
         - **output_lengths** (batch): list of sequence output lengths
     """
+
     def __init__(
-            self,
-            num_classes: int,
-            input_dim: int = 80,
-            encoder_dim: int = 512,
-            num_encoder_layers: int = 16,
-            reduce_layer_index: int = 7,
-            recover_layer_index: int = 15,
-            num_attention_heads: int = 8,
-            feed_forward_expansion_factor: int = 4,
-            conv_expansion_factor: int = 2,
-            input_dropout_p: float = 0.1,
-            feed_forward_dropout_p: float = 0.1,
-            attention_dropout_p: float = 0.1,
-            conv_dropout_p: float = 0.1,
-            conv_kernel_size: int = 31,
-            half_step_residual: bool = False,
+        self,
+        num_classes: int,
+        input_dim: int = 80,
+        encoder_dim: int = 512,
+        num_encoder_layers: int = 16,
+        reduce_layer_index: int = 7,
+        recover_layer_index: int = 15,
+        num_attention_heads: int = 8,
+        feed_forward_expansion_factor: int = 4,
+        conv_expansion_factor: int = 2,
+        input_dropout_p: float = 0.1,
+        feed_forward_dropout_p: float = 0.1,
+        attention_dropout_p: float = 0.1,
+        conv_dropout_p: float = 0.1,
+        conv_kernel_size: int = 31,
+        half_step_residual: bool = False,
     ) -> None:
         super(Squeezeformer, self).__init__()
         self.encoder = SqueezeformerEncoder(
@@ -87,7 +90,7 @@ class Squeezeformer(nn.Module):
         self.fc = nn.Linear(encoder_dim, num_classes, bias=False)
 
     def count_parameters(self) -> int:
-        """ Count parameters of encoder """
+        """Count parameters of encoder"""
         return self.encoder.count_parameters()
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:

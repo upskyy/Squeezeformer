@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Tuple, Union
+
 import torch.nn as nn
 from torch import Tensor
-from typing import Tuple, Union
-from squeezeformer.activation import Swish, GLU
+
+from squeezeformer.activation import GLU, Swish
 from squeezeformer.modules import Transpose
 
 
@@ -33,6 +35,7 @@ class DepthwiseConv2dSubsampling(nn.Module):
         - **outputs** (batch, time, dim): Tensor produced by the convolution
         - **output_lengths** (batch): list of sequence output lengths
     """
+
     def __init__(self, in_channels: int, out_channels: int) -> None:
         super(DepthwiseConv2dSubsampling, self).__init__()
         self.sequential = nn.Sequential(
@@ -72,13 +75,14 @@ class DepthwiseConv2d(nn.Module):
     Returns: outputs
         - **outputs** (batch, out_channels, time): Tensor produces by depthwise 2-D convolution.
     """
+
     def __init__(
-            self,
-            in_channels: int,
-            out_channels: int,
-            kernel_size: Union[int, Tuple],
-            stride: int = 2,
-            padding: int = 0,
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: Union[int, Tuple],
+        stride: int = 2,
+        padding: int = 0,
     ) -> None:
         super(DepthwiseConv2d, self).__init__()
         assert out_channels % in_channels == 0, "out_channels should be constant multiple of in_channels"
@@ -112,14 +116,15 @@ class DepthwiseConv1d(nn.Module):
     Returns: outputs
         - **outputs** (batch, out_channels, time): Tensor produces by depthwise 1-D convolution.
     """
+
     def __init__(
-            self,
-            in_channels: int,
-            out_channels: int,
-            kernel_size: int,
-            stride: int = 1,
-            padding: int = 0,
-            bias: bool = False,
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: int,
+        stride: int = 1,
+        padding: int = 0,
+        bias: bool = False,
     ) -> None:
         super(DepthwiseConv1d, self).__init__()
         assert out_channels % in_channels == 0, "out_channels should be constant multiple of in_channels"
@@ -153,13 +158,14 @@ class PointwiseConv1d(nn.Module):
     Returns: outputs
         - **outputs** (batch, out_channels, time): Tensor produces by pointwise 1-D convolution.
     """
+
     def __init__(
-            self,
-            in_channels: int,
-            out_channels: int,
-            stride: int = 1,
-            padding: int = 0,
-            bias: bool = True,
+        self,
+        in_channels: int,
+        out_channels: int,
+        stride: int = 1,
+        padding: int = 0,
+        bias: bool = True,
     ) -> None:
         super(PointwiseConv1d, self).__init__()
         self.conv = nn.Conv1d(
@@ -190,12 +196,13 @@ class ConvModule(nn.Module):
     Outputs: outputs
         outputs (batch, time, dim): Tensor produces by squeezeformer convolution module.
     """
+
     def __init__(
-            self,
-            in_channels: int,
-            kernel_size: int = 31,
-            expansion_factor: int = 2,
-            dropout_p: float = 0.1,
+        self,
+        in_channels: int,
+        kernel_size: int = 31,
+        expansion_factor: int = 2,
+        dropout_p: float = 0.1,
     ) -> None:
         super(ConvModule, self).__init__()
         assert (kernel_size - 1) % 2 == 0, "kernel_size should be a odd number for 'SAME' padding"
@@ -218,11 +225,11 @@ class ConvModule(nn.Module):
 
 class TimeReductionLayer(nn.Module):
     def __init__(
-            self,
-            in_channels: int = 1,
-            out_channels: int = 1,
-            kernel_size: int = 3,
-            stride: int = 2,
+        self,
+        in_channels: int = 1,
+        out_channels: int = 1,
+        kernel_size: int = 3,
+        stride: int = 2,
     ) -> None:
         super(TimeReductionLayer, self).__init__()
         self.sequential = nn.Sequential(
