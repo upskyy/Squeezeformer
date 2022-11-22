@@ -13,12 +13,14 @@
 # limitations under the License.
 
 import math
+from typing import Optional
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from typing import Optional
-from squeezeformer.modules import PositionalEncoding
+
+from squeezeformer.modules import RelPositionalEncoding
 
 
 class RelativeMultiHeadAttention(nn.Module):
@@ -38,18 +40,19 @@ class RelativeMultiHeadAttention(nn.Module):
     Returns:
         - **outputs**: Tensor produces by relative multi head attention module.
     """
+
     def __init__(
-            self,
-            d_model: int = 512,
-            num_heads: int = 16,
-            dropout_p: float = 0.1,
+        self,
+        d_model: int = 512,
+        num_heads: int = 16,
+        dropout_p: float = 0.1,
     ):
         super(RelativeMultiHeadAttention, self).__init__()
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
         self.d_model = d_model
         self.d_head = int(d_model / num_heads)
         self.num_heads = num_heads
-        self.sqrt_dim = math.sqrt(d_model)
+        self.sqrt_dim = math.sqrt(self.d_head)
 
         self.query_proj = nn.Linear(d_model, d_model)
         self.key_proj = nn.Linear(d_model, d_model)
@@ -65,12 +68,12 @@ class RelativeMultiHeadAttention(nn.Module):
         self.out_proj = nn.Linear(d_model, d_model)
 
     def forward(
-            self,
-            query: Tensor,
-            key: Tensor,
-            value: Tensor,
-            pos_embedding: Tensor,
-            mask: Optional[Tensor] = None,
+        self,
+        query: Tensor,
+        key: Tensor,
+        value: Tensor,
+        pos_embedding: Tensor,
+        mask: Optional[Tensor] = None,
     ) -> Tensor:
         batch_size = value.size(0)
 
@@ -103,7 +106,7 @@ class RelativeMultiHeadAttention(nn.Module):
         padded_pos_score = torch.cat([zeros, pos_score], dim=-1)
 
         padded_pos_score = padded_pos_score.view(batch_size, num_heads, seq_length2 + 1, seq_length1)
-        pos_score = padded_pos_score[:, :, 1:].view_as(pos_score)
+        pos_score = padded_pos_score[:, :, 1:].view_as(pos_score)[:, :, :, : seq_length2 // 2 + 1]
 
         return pos_score
 
@@ -120,15 +123,16 @@ class MultiHeadedSelfAttentionModule(nn.Module):
     Returns:
         - **outputs** (batch, time, dim): Tensor produces by relative multi headed self attention module.
     """
+
     def __init__(self, d_model: int, num_heads: int, dropout_p: float = 0.1):
         super(MultiHeadedSelfAttentionModule, self).__init__()
-        self.positional_encoding = PositionalEncoding(d_model)
+        self.positional_encoding = RelPositionalEncoding(d_model)
         self.attention = RelativeMultiHeadAttention(d_model, num_heads, dropout_p)
         self.dropout = nn.Dropout(p=dropout_p)
 
     def forward(self, inputs: Tensor, mask: Optional[Tensor] = None):
-        batch_size, seq_length, _ = inputs.size()
-        pos_embedding = self.positional_encoding(seq_length)
+        batch_size = inputs.size(0)
+        pos_embedding = self.positional_encoding(inputs)
         pos_embedding = pos_embedding.repeat(batch_size, 1, 1)
 
         outputs = self.attention(inputs, inputs, inputs, pos_embedding=pos_embedding, mask=mask)
