@@ -1,23 +1,23 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-with open('README.md', encoding='utf-8') as f:
+with open("README.md", encoding="utf-8") as f:
     long_description = f.read()
 
 
 setup(
-    name='squeezeformer',
+    name="squeezeformer",
     packages=find_packages(),
-    version='0.1.1',
-    description='An Efficient Transformer for Automatic Speech Recognition',
+    version="1.0.0",
+    description="An Efficient Transformer for Automatic Speech Recognition",
     long_description=long_description,
-    long_description_content_type='text/markdown',
-    author='Ha Sangchun',
-    author_email='seomk9896@gmail.com',
-    url='https://github.com/upskyy/Squeezeformer',
-    keywords=['asr', 'speech_recognition', 'artificial intelligence'],
-    python_requires='>=3.6',
+    long_description_content_type="text/markdown",
+    author="Ha Sangchun",
+    author_email="seomk9896@gmail.com",
+    url="https://github.com/upskyy/Squeezeformer",
+    keywords=["asr", "speech_recognition", "artificial intelligence"],
+    python_requires=">=3.6",
     install_requires=[
-        'torch>=1.4.0',
-        'numpy',
+        "torch>=1.4.0",
+        "numpy",
     ],
 )
