@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch import Tensor
 import torch.nn as nn
+from torch import Tensor
 
 
 class Swish(nn.Module):
