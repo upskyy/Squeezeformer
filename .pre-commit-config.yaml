@@ -20,9 +20,3 @@ repos:
       - id: isort
         name: isort (python)
         args: ["--profile", "black", "-l", "120"]
-  - repo: https://gitlab.com/pycqa/flake8.git
-    rev: 4.0.1
-    hooks:
-      - id: flake8
-        types: [python]
-        args: ["--max-line-length", "120", "--ignore", "F811,F841,E203,E402,E501,E712,W503"]
