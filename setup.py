@@ -11,7 +11,7 @@ setup(
     description="An Efficient Transformer for Automatic Speech Recognition",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="Ha Sangchun",
+    author="Sangchun Ha",
     author_email="seomk9896@gmail.com",
     url="https://github.com/upskyy/Squeezeformer",
     keywords=["asr", "speech_recognition", "artificial intelligence"],
